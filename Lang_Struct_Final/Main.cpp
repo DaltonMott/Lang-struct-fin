@@ -3,20 +3,55 @@
 #include <vector>
 #include <iterator>
 #include <sstream>
+#include <math.h>
 using namespace std;
 
 
 
-double Calculator(const string& expr) {
-	istringstream iss(expr);
+double Calculator(const string& str)
+{
+	istringstream expr(str);
 	vector<double> stack;
 	string token;
-	while (iss >> token) {
+	while (expr >> token)
+	{
 		double tokenNum;
-		if (istringstream(token) >> tokenNum) {
+		if (istringstream(token) >> tokenNum)
+		{
 			stack.push_back(tokenNum);
 		}
-		else {
+		else if (token == "(" || token == ")") {}
+		else if (stack.size() < 1)
+		{
+			printf("Error: Not enough inputs.");
+			exit(1);
+		}
+		else if (token == "sin")
+		{
+			double operand = stack.back();
+			stack.pop_back();
+			stack.push_back(sin(operand));
+		}
+		else if (token == "cos")
+		{
+			double operand = stack.back();
+			stack.pop_back();
+			stack.push_back(cos(operand));
+		}
+		else if (token == "tan")
+		{
+
+			double operand = stack.back();
+			stack.pop_back();
+			stack.push_back(tan(operand));
+		}
+		else
+		{
+			if (stack.size() < 2)
+			{
+				printf("Error: Not enough inputs.");
+				exit(1);
+			}
 			double secondOperand = stack.back();
 			stack.pop_back();
 			double firstOperand = stack.back();
@@ -31,76 +66,34 @@ double Calculator(const string& expr) {
 				stack.push_back(firstOperand + secondOperand);
 			else if (token == "^")
 				stack.push_back(pow(firstOperand, secondOperand));
-			else { 
-				cerr << "Error" << endl;
+			else {
+				printf("Error: Invalid input.");
 				exit(1);
 			}
 		}
 	}
-	return stack.back();
+	if (stack.size() != 1)
+	{
+		cout << "Error: too many operands. Number of outputs must be ";
+		return 1;
+	}
+	else
+		return stack.back();
 }
 
-int main() {
+int main()
+{
 	string input;
 	cout << "Please enter compuation in RPN." << endl;
-	cin >> input;
-	//cout << input;
-	cout << Calculator(input) << endl;
+	getline(cin, input);
+		while (input != "exit")
+		{
+			cout << "Answer = ";
+			cout << Calculator(input) << endl;
+			cout << "Enter another value, or type 'exit' to quit" << endl;
+			getline(cin, input);
+			system("CLS");
+		}
 
 	return 0;
 }
-
-//vector<double> stack;
-////if statement parentheses
-//for (char& c : input)
-//{
-//	double secondOperand = stack.back();
-//	stack.pop_back();
-//	double firstOperand = stack.back();
-//	stack.pop_back();
-//	switch (c)
-//	{
-//	case '-':
-//		stack.push_back(firstOperand - secondOperand);
-//		break;
-//	case '+':
-//		stack.push_back(firstOperand + secondOperand);
-//		break;
-//	case '*':
-//		stack.push_back(firstOperand * secondOperand);
-//		break;
-//	case '/':
-//		stack.push_back(firstOperand / secondOperand);
-//		break;
-//	case 's'://sin
-//		if (i - 1 != 'o')
-//		{
-//
-//		}
-//		break;
-//	case 'c'://cos
-//
-//		break;
-//	case 't'://tan
-//
-//		break;
-//	case '(':
-//
-//		break;
-//	case ')':
-//
-//		break;
-//	case " ":
-//
-//	default:
-//		if (isdigit(c))
-//		{
-//
-//		}
-//		else
-//			cout << "error" << endl;
-//		break;
-//	}
-//	i++;
-//}
-//return stack.back();
